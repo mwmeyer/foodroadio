@@ -217,55 +217,6 @@ export default function FoodTruckFinder() {
 
   return (
     <>
-      <style jsx>{`
-        #map {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 1;
-          filter: brightness(0.7);
-        }
-
-        .food-truck-icon {
-          background-color: #fff;
-          border-radius: 50%;
-          border: 3px solid #f97316;
-          text-align: center;
-          line-height: 28px;
-          font-size: 18px;
-          font-weight: bold;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-          transition:
-            transform 0.2s ease-in-out,
-            border-color 0.2s ease-in-out;
-          cursor: pointer;
-        }
-
-        .food-truck-icon.active {
-          transform: scale(1.5);
-          border-color: #fff;
-        }
-
-        .card {
-          transition:
-            transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-            opacity 0.3s ease;
-          transform-origin: center center;
-        }
-
-        .card-enter {
-          transform: scale(0.8) translateY(20px);
-          opacity: 0;
-        }
-
-        .card-exit {
-          transform: scale(0.8);
-          opacity: 0;
-        }
-      `}</style>
-
       {/* Leaflet Map Container */}
       <div id="map" ref={mapContainerRef}></div>
 

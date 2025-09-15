@@ -3,14 +3,26 @@
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    "./styles.css": "./dist/index.css",
+    "./*": "./dist/*.js"
+  },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
+    "build": "npm run build:styles && npm run build:components",
+    "build:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
+    "build:components": "tsup",
+    "dev": "npm run dev:styles & npm run dev:components",
+    "dev:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css --watch",
+    "dev:components": "tsup --watch",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
+    "@repo/tailwind-config": "*",
     "@repo/typescript-config": "*",
     "@types/react": "^18.2.14",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.0",
     "tsup": "^8.0.1",
     "typescript": "5.5.4"
   },

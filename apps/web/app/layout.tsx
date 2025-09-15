@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import Script from "next/script";
+import "../styles/global.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,7 +14,7 @@ export default function RootLayout({
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Food Truck Finder</title>
+        <title>foodroadio</title>
 
         {/* Leaflet.js CSS */}
         <link
@@ -28,12 +29,6 @@ export default function RootLayout({
         style={{ overflow: "hidden" }}
       >
         {children}
-
-        {/* Tailwind CSS */}
-        <Script
-          src="https://cdn.tailwindcss.com"
-          strategy="beforeInteractive"
-        />
 
         {/* Leaflet.js */}
         <Script
