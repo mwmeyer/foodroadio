@@ -44,12 +44,12 @@ export default function FoodTruckFinder() {
 
   // Search data
   const searchData = {
-    cuisine: [...new Set(foodTrucks.map((t) => t.cuisine))].map((c) => ({
+    cuisine: Array.from(new Set(foodTrucks.map((t) => t.cuisine))).map((c) => ({
       id: c.toLowerCase().replace(" ", "-"),
       name: c,
-      emoji: foodTrucks.find((t) => t.cuisine === c)?.icon || "🍽️",
+      emoji: (foodTrucks.find((t) => t.cuisine === c) || {}).icon || "🍽️",
     })),
-    city: [...new Set(foodTrucks.map((t) => t.city))].map((c) => ({
+    city: Array.from(new Set(foodTrucks.map((t) => t.city))).map((c) => ({
       id: c.toLowerCase().replace(" ", "-"),
       name: c,
       emoji: "🇺🇸",
