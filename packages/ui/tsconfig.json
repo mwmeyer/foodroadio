@@ -3,6 +3,10 @@
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "module": "esnext",
+    "target": "es2020",
+    "moduleResolution": "node",
+    "jsx": "react-jsx"
   }
 }

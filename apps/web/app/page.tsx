@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import foodTruckData from "../data/foodTruckData.json";
+import type { LeafletMapRef } from "@repo/ui";
+import MapWrapper from "../components/MapWrapper";
 
 // Define types for food truck data
 interface FoodTruck {
@@ -22,6 +24,9 @@ interface SearchOption {
 }
 
 export default function FoodTruckFinder() {
+  // Food truck data imported from JSON file
+  const foodTrucks: FoodTruck[] = foodTruckData;
+
   // State management
   const [showSearchOverlay, setShowSearchOverlay] = useState(true);
   const [selectedTruck, setSelectedTruck] = useState<FoodTruck | null>(null);
@@ -30,17 +35,12 @@ export default function FoodTruckFinder() {
   const [searchFilter, setSearchFilter] = useState("");
   const [overlayError, setOverlayError] = useState("");
   const [geolocateLoading, setGeolocateLoading] = useState(false);
-  const [currentTrucks, setCurrentTrucks] = useState<FoodTruck[]>([]);
-  const [showMapPrompt, setShowMapPrompt] = useState(false);
+  const [currentTrucks, setCurrentTrucks] = useState<FoodTruck[]>(foodTrucks);
+  const [showMapPrompt, setShowMapPrompt] = useState(true);
 
   // Refs
-  const mapRef = useRef<any>(null);
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const markersRef = useRef<{ [key: number]: any }>({});
+  const mapRef = useRef<LeafletMapRef>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Food truck data imported from JSON file
-  const foodTrucks: FoodTruck[] = foodTruckData;
 
   // Search data
   const searchData = {
@@ -56,82 +56,20 @@ export default function FoodTruckFinder() {
     })),
   };
 
-  // Initialize map
-  useEffect(() => {
-    if (!mapContainerRef.current || mapRef.current) return;
-
-    // Dynamically import Leaflet to avoid SSR issues
-    const initMap = async () => {
-      const L = (window as any).L;
-      if (!L) return;
-
-      const map = L.map(mapContainerRef.current, {
-        zoomControl: false,
-        attributionControl: false,
-      }).setView([39.8283, -98.5795], 4.5);
-
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png",
-        {
-          maxZoom: 19,
-        },
-      ).addTo(map);
-
-      mapRef.current = map;
-
-      // Handle map clicks to hide card
-      map.on("click", () => {
-        setSelectedTruck(null);
-        setShowMapPrompt(true);
-      });
-    };
-
-    // Wait for Leaflet to load
-    const checkLeaflet = () => {
-      if ((window as any).L) {
-        initMap();
-      } else {
-        setTimeout(checkLeaflet, 100);
-      }
-    };
-    checkLeaflet();
-  }, []);
-
-  // Update markers when trucks change
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    const L = (window as any).L;
-    if (!L) return;
-
-    // Clear existing markers
-    Object.values(markersRef.current).forEach((marker: any) => marker.remove());
-    markersRef.current = {};
-
-    // Add new markers
-    currentTrucks.forEach((truck) => {
-      const customIcon = L.divIcon({
-        className: `food-truck-icon truck-${truck.id} ${selectedTruck?.id === truck.id ? "active" : ""}`,
-        html: truck.icon,
-        iconSize: [34, 34],
-        iconAnchor: [17, 17],
-      });
-
-      const marker = L.marker([truck.lat, truck.lng], { icon: customIcon });
-      marker.addTo(mapRef.current);
-      marker.on("click", () => handleTruckClick(truck));
-      markersRef.current[truck.id] = marker;
-    });
-  }, [currentTrucks, selectedTruck]);
-
   // Handle truck selection
   const handleTruckClick = (truck: FoodTruck) => {
     setSelectedTruck(truck);
     setShowMapPrompt(false);
 
     if (mapRef.current) {
-      mapRef.current.flyTo([truck.lat, truck.lng], 14, { duration: 1 });
+      mapRef.current.flyTo(truck.lat, truck.lng, 14);
     }
+  };
+
+  // Handle map click
+  const handleMapClick = () => {
+    setSelectedTruck(null);
+    setShowMapPrompt(true);
   };
 
   // Handle search option selection
@@ -140,18 +78,18 @@ export default function FoodTruckFinder() {
     const filteredTrucks = foodTrucks.filter(
       (truck) => truck[searchTab] === option.name,
     );
+    console.log(
+      "Selected option:",
+      option.name,
+      "Found trucks:",
+      filteredTrucks.length,
+    );
     setCurrentTrucks(filteredTrucks);
     setShowSearchOverlay(false);
     setShowMapPrompt(filteredTrucks.length > 0);
 
     if (filteredTrucks.length > 0 && mapRef.current) {
-      const L = (window as any).L;
-      if (L) {
-        const bounds = L.latLngBounds(
-          filteredTrucks.map((t) => [t.lat, t.lng]),
-        );
-        mapRef.current.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
-      }
+      mapRef.current.fitBounds(filteredTrucks);
     }
   };
 
@@ -169,7 +107,7 @@ export default function FoodTruckFinder() {
       (position) => {
         const { latitude, longitude } = position.coords;
         if (mapRef.current) {
-          mapRef.current.flyTo([latitude, longitude], 13);
+          mapRef.current.flyTo(latitude, longitude, 13);
         }
         setCurrentTrucks(foodTrucks);
         setShowSearchOverlay(false);
@@ -215,10 +153,24 @@ export default function FoodTruckFinder() {
     };
   }, [isDropdownOpen]);
 
+  console.log(
+    "Rendering with trucks:",
+    currentTrucks.length,
+    "showSearchOverlay:",
+    showSearchOverlay,
+  );
+
   return (
     <>
       {/* Leaflet Map Container */}
-      <div id="map" ref={mapContainerRef}></div>
+      <MapWrapper
+        ref={mapRef}
+        trucks={currentTrucks}
+        selectedTruck={selectedTruck}
+        onTruckClick={handleTruckClick}
+        onMapClick={handleMapClick}
+        className="absolute top-0 left-0 w-full h-full z-[1]"
+      />
 
       {/* Initial Search Overlay */}
       {showSearchOverlay && (
@@ -361,6 +313,31 @@ export default function FoodTruckFinder() {
                   <span>
                     {geolocateLoading ? "Finding you..." : "Trucks Near Me"}
                   </span>
+                </button>
+              </div>
+
+              {/* Show All Trucks Button */}
+              <div>
+                <button
+                  onClick={() => {
+                    console.log(
+                      "Show all trucks clicked, total:",
+                      foodTrucks.length,
+                    );
+                    setCurrentTrucks(foodTrucks);
+                    setShowSearchOverlay(false);
+                    setShowMapPrompt(true);
+                    // Fit bounds after map is ready
+                    setTimeout(() => {
+                      if (mapRef.current) {
+                        mapRef.current.fitBounds(foodTrucks);
+                      }
+                    }, 100);
+                  }}
+                  className="w-full flex items-center justify-center gap-3 px-8 py-4 text-lg font-bold text-white bg-green-600 rounded-full shadow-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 focus:outline-none transition transform hover:scale-105"
+                >
+                  <span className="text-xl">🗺️</span>
+                  <span>Show All Trucks</span>
                 </button>
               </div>
 
