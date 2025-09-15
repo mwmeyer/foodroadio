@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Kogi BBQ",
+    "cuisine": "Korean BBQ",
+    "city": "Los Angeles",
+    "lat": 34.0522,
+    "lng": -118.2437,
+    "icon": "🌮",
+    "description": "The legendary truck that started the Korean-Mexican fusion craze."
+  },
+  {
+    "id": 2,
+    "name": "Mariscos Jalisco",
+    "cuisine": "Seafood",
+    "city": "Los Angeles",
+    "lat": 34.0488,
+    "lng": -118.1583,
+    "icon": "🦐",
+    "description": "Serving LA's most celebrated shrimp tacos for over a decade."
+  },
+  {
+    "id": 3,
+    "name": "Leo's Tacos Truck",
+    "cuisine": "Tacos",
+    "city": "Los Angeles",
+    "lat": 34.0983,
+    "lng": -118.3259,
+    "icon": "🌮",
+    "description": "Famous for their irresistible al pastor tacos carved right off the spit."
+  },
+  {
+    "id": 4,
+    "name": "Guerrilla Tacos",
+    "cuisine": "Tacos",
+    "city": "Los Angeles",
+    "lat": 34.0407,
+    "lng": -118.2324,
+    "icon": "🌶️",
+    "description": "Gourmet, artisanal tacos that push the boundaries of flavor."
+  },
+  {
+    "id": 6,
+    "name": "Free Range",
+    "cuisine": "Chicken",
+    "city": "Los Angeles",
+    "lat": 34.0898,
+    "lng": -118.3711,
+    "icon": "🍗",
+    "description": "The original tempura-fried chicken sandwich that's crispy, juicy, and perfect."
+  },
+  {
+    "id": 7,
+    "name": "The Halal Guys",
+    "cuisine": "Middle Eastern",
+    "city": "New York City",
+    "lat": 40.7618,
+    "lng": -73.9782,
+    "icon": "🥙",
+    "description": "The original NYC street cart serving world-famous gyros and chicken over rice."
+  },
+  {
+    "id": 9,
+    "name": "NY Dosas",
+    "cuisine": "Indian",
+    "city": "New York City",
+    "lat": 40.7308,
+    "lng": -73.9975,
+    "icon": "🥟",
+    "description": "Legendary vegan South Indian street food from an award-winning cart."
+  },
+  {
+    "id": 10,
+    "name": "King of Falafel & Shawarma",
+    "cuisine": "Middle Eastern",
+    "city": "New York City",
+    "lat": 40.7523,
+    "lng": -73.8821,
+    "icon": "🌯",
+    "description": "Award-winning, must-try falafel and shawarma straight from the streets of Astoria."
+  },
+  {
+    "id": 12,
+    "name": "Korilla BBQ",
+    "cuisine": "Korean BBQ",
+    "city": "New York City",
+    "lat": 40.7248,
+    "lng": -73.9879,
+    "icon": "🌮",
+    "description": "Bold and flavorful Korean BBQ served up in burritos, bowls, and salads."
+  }
+]
