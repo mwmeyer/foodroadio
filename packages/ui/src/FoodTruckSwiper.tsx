@@ -2,6 +2,20 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 
+interface Event {
+  id: number;
+  title: string;
+  type: string;
+  date: string;
+  time: string;
+  duration: string;
+  description: string;
+  price: number;
+  capacity: number;
+  spotsLeft: number;
+  image: string;
+}
+
 interface FoodTruck {
   id: number;
   name: string;
@@ -11,6 +25,7 @@ interface FoodTruck {
   lng: number;
   icon: string;
   description: string;
+  events?: Event[];
 }
 
 interface FoodTruckSwiperProps {
@@ -18,6 +33,7 @@ interface FoodTruckSwiperProps {
   selectedTruck?: FoodTruck | null;
   onTruckSelect: (truck: FoodTruck) => void;
   onClose?: () => void;
+  onEventClick?: (event: Event, truck: FoodTruck) => void;
   className?: string;
 }
 
@@ -26,6 +42,7 @@ const FoodTruckSwiper: React.FC<FoodTruckSwiperProps> = ({
   selectedTruck,
   onTruckSelect,
   onClose,
+  onEventClick,
   className,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -120,18 +137,57 @@ const FoodTruckSwiper: React.FC<FoodTruckSwiperProps> = ({
     return `http://maps.apple.com/?q=${encodeURIComponent(truck.name)}&ll=${truck.lat},${truck.lng}`;
   };
 
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return "Today";
+    } else if (date.toDateString() === tomorrow.toDateString()) {
+      return "Tomorrow";
+    } else {
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+    }
+  };
+
+  // Get upcoming events (extended for demo - next 30 days)
+  const getUpcomingEvents = (truck: FoodTruck) => {
+    if (!truck.events) {
+      return [];
+    }
+
+    const now = new Date();
+    const nextMonth = new Date();
+    nextMonth.setDate(nextMonth.getDate() + 30); // Extended to 30 days for demo
+
+    return truck.events
+      .filter((event) => {
+        const eventDate = new Date(event.date);
+        return eventDate >= now && eventDate <= nextMonth;
+      })
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .slice(0, 3); // Show max 3 upcoming events
+  };
+
   if (trucks.length === 0) {
     return null;
   }
 
   const currentTruck = trucks[currentIndex];
+  const upcomingEvents = getUpcomingEvents(currentTruck);
 
   return (
     <div className={`relative ${className}`}>
       {/* Card Container */}
       <div
         ref={containerRef}
-        className="relative w-full max-w-sm mx-auto bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-sm mx-auto bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleEnd}
@@ -168,13 +224,13 @@ const FoodTruckSwiper: React.FC<FoodTruckSwiperProps> = ({
         )}
 
         {/* Card Content */}
-        <div className="p-8">
+        <div className="p-6">
           <div className="flex flex-col items-center text-center">
             {/* Food Truck Icon */}
-            <div className="text-7xl mb-4">{currentTruck.icon}</div>
+            <div className="text-6xl mb-4">{currentTruck.icon}</div>
 
             {/* Food Truck Info */}
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
               {currentTruck.name}
             </h2>
 
@@ -186,9 +242,83 @@ const FoodTruckSwiper: React.FC<FoodTruckSwiperProps> = ({
               <span className="text-gray-600">{currentTruck.city}</span>
             </div>
 
-            <p className="text-gray-600 leading-relaxed mb-6">
+            <p className="text-gray-600 leading-relaxed mb-6 text-sm">
               {currentTruck.description}
             </p>
+
+            {/* Events Section */}
+            {upcomingEvents.length > 0 && (
+              <div className="w-full mb-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <span>🎉</span>
+                  Upcoming Events
+                </h3>
+                <div className="space-y-3">
+                  {upcomingEvents.map((event) => (
+                    <div
+                      key={event.id}
+                      onClick={() => onEventClick?.(event, currentTruck)}
+                      className="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-xl p-3 cursor-pointer hover:shadow-md transition-all hover:scale-105"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="text-2xl flex-shrink-0 mt-1">
+                          {event.image}
+                        </div>
+                        <div className="flex-1 text-left min-w-0">
+                          <h4 className="font-semibold text-gray-800 text-sm leading-tight mb-1">
+                            {event.title}
+                          </h4>
+                          <div className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+                            <span className="font-medium text-orange-600">
+                              {formatDate(event.date)}
+                            </span>
+                            <span className="text-gray-400">•</span>
+                            <span>{event.time}</span>
+                            {event.price > 0 && (
+                              <>
+                                <span className="text-gray-400">•</span>
+                                <span className="text-green-600 font-medium">
+                                  ${event.price}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500 bg-white/70 px-2 py-1 rounded-full">
+                              {event.type}
+                            </span>
+                            {event.spotsLeft <= 5 && event.spotsLeft > 0 && (
+                              <span className="text-xs text-red-600 font-medium">
+                                Only {event.spotsLeft} spots left!
+                              </span>
+                            )}
+                            {event.spotsLeft === 0 && (
+                              <span className="text-xs text-red-600 font-medium">
+                                Sold Out
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {currentTruck.events && currentTruck.events.length > 3 && (
+                  <button className="mt-3 text-sm text-orange-600 hover:text-orange-700 font-medium">
+                    View All Events ({currentTruck.events.length})
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* No Events Message */}
+            {(!currentTruck.events || currentTruck.events.length === 0) && (
+              <div className="w-full mb-6 p-4 bg-gray-50 rounded-xl">
+                <p className="text-gray-500 text-sm">
+                  No upcoming events scheduled yet. Check back soon!
+                </p>
+              </div>
+            )}
 
             {/* Action Button */}
             <div className="w-full">

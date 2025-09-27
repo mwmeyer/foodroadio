@@ -7,7 +7,35 @@
     "lat": 34.0522,
     "lng": -118.2437,
     "icon": "🌮",
-    "description": "The legendary truck that started the Korean-Mexican fusion craze."
+    "description": "The legendary truck that started the Korean-Mexican fusion craze.",
+    "events": [
+      {
+        "id": 101,
+        "title": "Korean BBQ Cooking Class",
+        "type": "Cooking Class",
+        "date": "2025-09-28",
+        "time": "6:00 PM",
+        "duration": "2 hours",
+        "description": "Learn to make authentic Korean BBQ tacos from our head chef! Includes all ingredients and take-home recipes.",
+        "price": 45,
+        "capacity": 12,
+        "spotsLeft": 5,
+        "image": "🍳"
+      },
+      {
+        "id": 102,
+        "title": "Live Music Night with Local Bands",
+        "type": "Live Music",
+        "date": "2025-09-30",
+        "time": "7:00 PM",
+        "duration": "3 hours",
+        "description": "Enjoy great food and live music from three amazing local bands. Full menu available!",
+        "price": 0,
+        "capacity": 50,
+        "spotsLeft": 23,
+        "image": "🎵"
+      }
+    ]
   },
   {
     "id": 2,
@@ -17,7 +45,35 @@
     "lat": 34.0488,
     "lng": -118.1583,
     "icon": "🦐",
-    "description": "Serving LA's most celebrated shrimp tacos for over a decade."
+    "description": "Serving LA's most celebrated shrimp tacos for over a decade.",
+    "events": [
+      {
+        "id": 201,
+        "title": "Taco Tuesday Trivia Night",
+        "type": "Trivia",
+        "date": "2025-09-29",
+        "time": "7:00 PM",
+        "duration": "2 hours",
+        "description": "Test your knowledge while enjoying our famous shrimp tacos! Prizes for winning teams.",
+        "price": 0,
+        "capacity": 40,
+        "spotsLeft": 15,
+        "image": "🧠"
+      },
+      {
+        "id": 202,
+        "title": "Seafood Prep Workshop",
+        "type": "Cooking Class",
+        "date": "2025-10-01",
+        "time": "5:30 PM",
+        "duration": "1.5 hours",
+        "description": "Learn the secrets of preparing fresh seafood like a pro. Hands-on experience included!",
+        "price": 35,
+        "capacity": 8,
+        "spotsLeft": 2,
+        "image": "🔪"
+      }
+    ]
   },
   {
     "id": 3,
@@ -27,7 +83,35 @@
     "lat": 34.0983,
     "lng": -118.3259,
     "icon": "🌮",
-    "description": "Famous for their irresistible al pastor tacos carved right off the spit."
+    "description": "Famous for their irresistible al pastor tacos carved right off the spit.",
+    "events": [
+      {
+        "id": 301,
+        "title": "Al Pastor Carving Demo",
+        "type": "Demo",
+        "date": "2025-09-28",
+        "time": "6:30 PM",
+        "duration": "45 minutes",
+        "description": "Watch our taquero demonstrate the art of al pastor carving. Free samples for attendees!",
+        "price": 0,
+        "capacity": 30,
+        "spotsLeft": 18,
+        "image": "🔥"
+      },
+      {
+        "id": 302,
+        "title": "Salsa Making Workshop",
+        "type": "Workshop",
+        "date": "2025-10-02",
+        "time": "4:00 PM",
+        "duration": "1 hour",
+        "description": "Create three different authentic Mexican salsas from scratch. Take home your creations!",
+        "price": 25,
+        "capacity": 15,
+        "spotsLeft": 8,
+        "image": "🌶️"
+      }
+    ]
   },
   {
     "id": 4,
@@ -37,7 +121,22 @@
     "lat": 34.0407,
     "lng": -118.2324,
     "icon": "🌶️",
-    "description": "Gourmet, artisanal tacos that push the boundaries of flavor."
+    "description": "Gourmet, artisanal tacos that push the boundaries of flavor.",
+    "events": [
+      {
+        "id": 401,
+        "title": "Wine & Taco Pairing Experience",
+        "type": "Tasting",
+        "date": "2025-10-03",
+        "time": "7:30 PM",
+        "duration": "2.5 hours",
+        "description": "Elevated dining experience pairing our signature tacos with carefully selected wines.",
+        "price": 65,
+        "capacity": 20,
+        "spotsLeft": 7,
+        "image": "🍷"
+      }
+    ]
   },
   {
     "id": 6,
@@ -47,7 +146,35 @@
     "lat": 34.0898,
     "lng": -118.3711,
     "icon": "🍗",
-    "description": "The original tempura-fried chicken sandwich that's crispy, juicy, and perfect."
+    "description": "The original tempura-fried chicken sandwich that's crispy, juicy, and perfect.",
+    "events": [
+      {
+        "id": 601,
+        "title": "Family Game Night",
+        "type": "Family Event",
+        "date": "2025-09-29",
+        "time": "6:00 PM",
+        "duration": "2 hours",
+        "description": "Bring the whole family for board games, activities, and our famous chicken sandwiches!",
+        "price": 0,
+        "capacity": 35,
+        "spotsLeft": 22,
+        "image": "🎲"
+      },
+      {
+        "id": 602,
+        "title": "Fried Chicken Masterclass",
+        "type": "Cooking Class",
+        "date": "2025-10-04",
+        "time": "3:00 PM",
+        "duration": "2 hours",
+        "description": "Master the art of perfect fried chicken with our signature tempura technique.",
+        "price": 40,
+        "capacity": 10,
+        "spotsLeft": 4,
+        "image": "👨‍🍳"
+      }
+    ]
   },
   {
     "id": 7,
@@ -57,7 +184,22 @@
     "lat": 40.7618,
     "lng": -73.9782,
     "icon": "🥙",
-    "description": "The original NYC street cart serving world-famous gyros and chicken over rice."
+    "description": "The original NYC street cart serving world-famous gyros and chicken over rice.",
+    "events": [
+      {
+        "id": 701,
+        "title": "Middle Eastern Culture Night",
+        "type": "Cultural Event",
+        "date": "2025-09-30",
+        "time": "7:00 PM",
+        "duration": "3 hours",
+        "description": "Experience Middle Eastern culture through food, music, and stories. Special menu available!",
+        "price": 15,
+        "capacity": 45,
+        "spotsLeft": 28,
+        "image": "🎭"
+      }
+    ]
   },
   {
     "id": 9,
@@ -67,7 +209,35 @@
     "lat": 40.7308,
     "lng": -73.9975,
     "icon": "🥟",
-    "description": "Legendary vegan South Indian street food from an award-winning cart."
+    "description": "Legendary vegan South Indian street food from an award-winning cart.",
+    "events": [
+      {
+        "id": 901,
+        "title": "Vegan Cooking Workshop",
+        "type": "Workshop",
+        "date": "2025-10-01",
+        "time": "11:00 AM",
+        "duration": "2 hours",
+        "description": "Learn to create delicious vegan Indian street food. All plant-based, all delicious!",
+        "price": 30,
+        "capacity": 12,
+        "spotsLeft": 9,
+        "image": "🌱"
+      },
+      {
+        "id": 902,
+        "title": "Saturday Morning Yoga & Dosas",
+        "type": "Wellness",
+        "date": "2025-10-05",
+        "time": "9:00 AM",
+        "duration": "1.5 hours",
+        "description": "Start your day with yoga followed by fresh, healthy dosas. Mats provided!",
+        "price": 20,
+        "capacity": 25,
+        "spotsLeft": 11,
+        "image": "🧘‍♀️"
+      }
+    ]
   },
   {
     "id": 10,
@@ -77,7 +247,22 @@
     "lat": 40.7523,
     "lng": -73.8821,
     "icon": "🌯",
-    "description": "Award-winning, must-try falafel and shawarma straight from the streets of Astoria."
+    "description": "Award-winning, must-try falafel and shawarma straight from the streets of Astoria.",
+    "events": [
+      {
+        "id": 1001,
+        "title": "Falafel Making Class",
+        "type": "Cooking Class",
+        "date": "2025-09-28",
+        "time": "5:00 PM",
+        "duration": "1.5 hours",
+        "description": "Learn the secret to perfect, crispy falafel from our award-winning chef!",
+        "price": 32,
+        "capacity": 14,
+        "spotsLeft": 6,
+        "image": "🥙"
+      }
+    ]
   },
   {
     "id": 12,
@@ -87,6 +272,34 @@
     "lat": 40.7248,
     "lng": -73.9879,
     "icon": "🌮",
-    "description": "Bold and flavorful Korean BBQ served up in burritos, bowls, and salads."
+    "description": "Bold and flavorful Korean BBQ served up in burritos, bowls, and salads.",
+    "events": [
+      {
+        "id": 1201,
+        "title": "K-Pop Dance Party",
+        "type": "Dance Party",
+        "date": "2025-10-02",
+        "time": "8:00 PM",
+        "duration": "3 hours",
+        "description": "Dance to the hottest K-Pop hits while enjoying Korean BBQ fusion food!",
+        "price": 10,
+        "capacity": 60,
+        "spotsLeft": 35,
+        "image": "💃"
+      },
+      {
+        "id": 1202,
+        "title": "Korean Language & Cooking",
+        "type": "Educational",
+        "date": "2025-09-29",
+        "time": "6:30 PM",
+        "duration": "2 hours",
+        "description": "Learn basic Korean phrases while preparing traditional dishes. Perfect for beginners!",
+        "price": 38,
+        "capacity": 16,
+        "spotsLeft": 3,
+        "image": "📚"
+      }
+    ]
   }
 ]

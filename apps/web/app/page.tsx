@@ -3,10 +3,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import foodTruckData from "../data/foodTruckData.json";
 import type { LeafletMapRef } from "@repo/ui";
-import { FoodTruckSwiper } from "@repo/ui";
+import { FoodTruckSwiper, EventModal } from "@repo/ui";
 import MapWrapper from "../components/MapWrapper";
 
 // Define types for food truck data
+interface Event {
+  id: number;
+  title: string;
+  type: string;
+  date: string;
+  time: string;
+  duration: string;
+  description: string;
+  price: number;
+  capacity: number;
+  spotsLeft: number;
+  image: string;
+}
+
 interface FoodTruck {
   id: number;
   name: string;
@@ -16,6 +30,7 @@ interface FoodTruck {
   lng: number;
   icon: string;
   description: string;
+  events?: Event[];
 }
 
 interface SearchOption {
@@ -31,13 +46,19 @@ export default function FoodTruckFinder() {
   // State management
   const [showSearchOverlay, setShowSearchOverlay] = useState(true);
   const [selectedTruck, setSelectedTruck] = useState<FoodTruck | null>(null);
-  const [searchTab, setSearchTab] = useState<"cuisine" | "city">("cuisine");
+  const [searchTab, setSearchTab] = useState<"cuisine" | "city" | "events">(
+    "cuisine",
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
   const [overlayError, setOverlayError] = useState("");
   const [geolocateLoading, setGeolocateLoading] = useState(false);
   const [currentTrucks, setCurrentTrucks] = useState<FoodTruck[]>(foodTrucks);
   const [showMapPrompt, setShowMapPrompt] = useState(true);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEventTruck, setSelectedEventTruck] =
+    useState<FoodTruck | null>(null);
 
   // Refs
   const mapRef = useRef<LeafletMapRef>(null);
@@ -54,6 +75,15 @@ export default function FoodTruckFinder() {
       id: c.toLowerCase().replace(" ", "-"),
       name: c,
       emoji: "🇺🇸",
+    })),
+    events: Array.from(
+      new Set(foodTrucks.flatMap((t) => t.events?.map((e) => e.type) || [])),
+    ).map((type) => ({
+      id: type.toLowerCase().replace(" ", "-"),
+      name: type,
+      emoji:
+        foodTrucks.flatMap((t) => t.events || []).find((e) => e.type === type)
+          ?.image || "🎉",
     })),
   };
 
@@ -73,12 +103,48 @@ export default function FoodTruckFinder() {
     setShowMapPrompt(true);
   };
 
+  // Handle event click
+  const handleEventClick = (event: Event, truck: FoodTruck) => {
+    setSelectedEvent(event);
+    setSelectedEventTruck(truck);
+    setIsEventModalOpen(true);
+  };
+
+  // Handle RSVP
+  const handleRSVP = (event: Event, truck: FoodTruck) => {
+    // TODO: Implement RSVP functionality
+    console.log("RSVP for event:", event.title, "at", truck.name);
+    setIsEventModalOpen(false);
+    // Here you would typically make an API call to register the user
+    alert(
+      `Thanks for your interest in "${event.title}"! RSVP functionality coming soon.`,
+    );
+  };
+
+  // Close event modal
+  const closeEventModal = () => {
+    setIsEventModalOpen(false);
+    setSelectedEvent(null);
+    setSelectedEventTruck(null);
+  };
+
   // Handle search option selection
   const selectOption = (option: SearchOption) => {
     setIsDropdownOpen(false);
-    const filteredTrucks = foodTrucks.filter(
-      (truck) => truck[searchTab] === option.name,
-    );
+    let filteredTrucks: FoodTruck[] = [];
+
+    if (searchTab === "events") {
+      // Filter trucks that have events of the selected type
+      filteredTrucks = foodTrucks.filter((truck) =>
+        truck.events?.some((event) => event.type === option.name),
+      );
+    } else {
+      // Filter by cuisine or city as before
+      filteredTrucks = foodTrucks.filter(
+        (truck) => truck[searchTab as keyof FoodTruck] === option.name,
+      );
+    }
+
     console.log(
       "Selected option:",
       option.name,
@@ -178,10 +244,10 @@ export default function FoodTruckFinder() {
         <div className="relative flex flex-col items-center justify-center w-full h-screen z-20 p-4 bg-black/60">
           <div className="w-full max-w-4xl text-center">
             <h1 className="text-5xl md:text-7xl font-extrabold text-white drop-shadow-lg mb-4">
-              Find Your Next Craving
+              Find Food & Events
             </h1>
             <p className="text-lg md:text-xl text-gray-200 drop-shadow-md mb-8">
-              Discover the best food trucks in your city.
+              Discover amazing food trucks and the exciting events they host.
             </p>
 
             <div className="w-full mb-6 max-w-xl mx-auto space-y-4">
@@ -192,7 +258,8 @@ export default function FoodTruckFinder() {
                   className="w-full flex items-center justify-between p-4 text-lg text-left bg-white/90 border border-gray-300 rounded-full shadow-lg hover:border-orange-400 focus:ring-4 focus:ring-orange-300 focus:outline-none backdrop-blur-sm transition"
                 >
                   <span className="text-gray-500">
-                    <span className="mr-2">🔎</span> Search Cuisine or City...
+                    <span className="mr-2">🔎</span> Search Food, Events, or
+                    City...
                   </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -216,17 +283,27 @@ export default function FoodTruckFinder() {
                       <div className="flex mb-2 bg-gray-100 rounded-lg p-1">
                         <button
                           onClick={() => setSearchTab("cuisine")}
-                          className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                          className={`flex-1 py-2 px-2 rounded-md text-sm font-medium transition-colors ${
                             searchTab === "cuisine"
                               ? "bg-white text-orange-600 shadow-sm"
                               : "text-gray-600 hover:text-gray-800"
                           }`}
                         >
-                          🍕 Cuisine
+                          🍕 Food
+                        </button>
+                        <button
+                          onClick={() => setSearchTab("events")}
+                          className={`flex-1 py-2 px-2 rounded-md text-sm font-medium transition-colors ${
+                            searchTab === "events"
+                              ? "bg-white text-orange-600 shadow-sm"
+                              : "text-gray-600 hover:text-gray-800"
+                          }`}
+                        >
+                          🎉 Events
                         </button>
                         <button
                           onClick={() => setSearchTab("city")}
-                          className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                          className={`flex-1 py-2 px-2 rounded-md text-sm font-medium transition-colors ${
                             searchTab === "city"
                               ? "bg-white text-orange-600 shadow-sm"
                               : "text-gray-600 hover:text-gray-800"
@@ -312,7 +389,9 @@ export default function FoodTruckFinder() {
                     />
                   </svg>
                   <span>
-                    {geolocateLoading ? "Finding you..." : "Trucks Near Me"}
+                    {geolocateLoading
+                      ? "Finding you..."
+                      : "Food & Events Near Me"}
                   </span>
                 </button>
               </div>
@@ -338,7 +417,7 @@ export default function FoodTruckFinder() {
                   className="w-full flex items-center justify-center gap-3 px-8 py-4 text-lg font-bold text-white bg-green-600 rounded-full shadow-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 focus:outline-none transition transform hover:scale-105"
                 >
                   <span className="text-xl">🗺️</span>
-                  <span>Show All Trucks</span>
+                  <span>Show All Food Trucks</span>
                 </button>
               </div>
 
@@ -371,6 +450,7 @@ export default function FoodTruckFinder() {
                   setSelectedTruck(null);
                   setShowMapPrompt(true);
                 }}
+                onEventClick={handleEventClick}
                 className="pointer-events-auto"
               />
             )}
@@ -378,7 +458,7 @@ export default function FoodTruckFinder() {
 
           {showMapPrompt && !selectedTruck && (
             <p className="absolute bottom-10 text-white text-xl font-bold text-center drop-shadow-lg bg-black/50 px-4 py-2 rounded-full">
-              Click a truck to see details
+              Click a truck to see details & events
             </p>
           )}
 
@@ -402,6 +482,17 @@ export default function FoodTruckFinder() {
             ← New Search
           </button>
         </div>
+      )}
+
+      {/* Event Modal */}
+      {selectedEvent && selectedEventTruck && (
+        <EventModal
+          event={selectedEvent}
+          truck={selectedEventTruck}
+          isOpen={isEventModalOpen}
+          onClose={closeEventModal}
+          onRSVP={handleRSVP}
+        />
       )}
     </>
   );
