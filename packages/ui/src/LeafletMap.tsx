@@ -45,7 +45,10 @@ const LeafletMapComponent = forwardRef<LeafletMapRef, LeafletMapProps>(
     useImperativeHandle(ref, () => ({
       flyTo: (lat: number, lng: number, zoom: number = 14) => {
         if (mapRef.current) {
-          mapRef.current.flyTo([lat, lng], zoom, { duration: 1 });
+          mapRef.current.flyTo([lat, lng], zoom, {
+            duration: 1.5,
+            easeLinearity: 0.1,
+          });
         }
       },
       fitBounds: (trucks: FoodTruck[]) => {
@@ -54,8 +57,10 @@ const LeafletMapComponent = forwardRef<LeafletMapRef, LeafletMapProps>(
             trucks.map((t: FoodTruck) => [t.lat, t.lng]),
           );
           mapRef.current.fitBounds(bounds, {
-            padding: [50, 50],
-            maxZoom: 14,
+            padding: [60, 60],
+            maxZoom: 12,
+            animate: true,
+            duration: 1.5,
           });
         }
       },
@@ -113,6 +118,9 @@ const LeafletMapComponent = forwardRef<LeafletMapRef, LeafletMapProps>(
           const map = L.map(container, {
             zoomControl: false,
             attributionControl: false,
+            zoomAnimation: true,
+            fadeAnimation: true,
+            markerZoomAnimation: true,
           }).setView([39.8283, -98.5795], 4.5);
 
           L.tileLayer(

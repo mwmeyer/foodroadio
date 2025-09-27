@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import foodTruckData from "../data/foodTruckData.json";
 import type { LeafletMapRef } from "@repo/ui";
+import { FoodTruckSwiper } from "@repo/ui";
 import MapWrapper from "../components/MapWrapper";
 
 // Define types for food truck data
@@ -107,7 +108,7 @@ export default function FoodTruckFinder() {
       (position) => {
         const { latitude, longitude } = position.coords;
         if (mapRef.current) {
-          mapRef.current.flyTo(latitude, longitude, 13);
+          mapRef.current.flyTo(latitude, longitude, 15);
         }
         setCurrentTrucks(foodTrucks);
         setShowSearchOverlay(false);
@@ -354,65 +355,28 @@ export default function FoodTruckFinder() {
       {/* Map UI (shown when not on search overlay) */}
       {!showSearchOverlay && (
         <div className="relative z-10 flex flex-col items-center justify-center h-screen p-4 pointer-events-none">
-          {/* Card Container */}
+          {/* Food Truck Swiper */}
           <div className="relative w-full max-w-sm pointer-events-auto">
             {selectedTruck && (
-              <div className="card relative w-full min-h-[22rem] bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 flex flex-col items-center text-center">
-                <button
-                  onClick={() => {
-                    setSelectedTruck(null);
-                    setShowMapPrompt(true);
-                  }}
-                  className="absolute top-4 right-5 text-gray-500 hover:text-gray-800 transition"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-7 w-7"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-                <div className="flex-grow flex flex-col items-center justify-center w-full">
-                  <p className="text-7xl">{selectedTruck.icon}</p>
-                  <h2 className="text-3xl font-bold text-gray-800 mt-4">
-                    {selectedTruck.name}
-                  </h2>
-                  <p className="text-lg text-orange-500 font-semibold">
-                    {selectedTruck.cuisine}
-                  </p>
-                  <p className="text-gray-600 mt-3 px-2 leading-relaxed">
-                    {selectedTruck.description}
-                  </p>
-                </div>
-                <a
-                  href={`http://maps.apple.com/?q=${encodeURIComponent(selectedTruck.name)}&ll=${selectedTruck.lat},${selectedTruck.lng}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 font-bold text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none transition transform hover:scale-105"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                  </svg>
-                  Get Directions
-                </a>
-              </div>
+              <FoodTruckSwiper
+                trucks={currentTrucks}
+                selectedTruck={selectedTruck}
+                onTruckSelect={(truck) => {
+                  setSelectedTruck(truck);
+                  if (mapRef.current) {
+                    mapRef.current.flyTo(truck.lat, truck.lng, 15);
+                  }
+                }}
+                onClose={() => {
+                  setSelectedTruck(null);
+                  setShowMapPrompt(true);
+                }}
+                className="pointer-events-auto"
+              />
             )}
           </div>
 
-          {showMapPrompt && (
+          {showMapPrompt && !selectedTruck && (
             <p className="absolute bottom-10 text-white text-xl font-bold text-center drop-shadow-lg bg-black/50 px-4 py-2 rounded-full">
               Click a truck to see details
             </p>
