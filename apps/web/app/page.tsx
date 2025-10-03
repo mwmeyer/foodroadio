@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import foodTruckData from "../data/foodTruckData.json";
 import type { LeafletMapRef } from "@repo/ui";
 import { FoodTruckSwiper, EventModal } from "@repo/ui";
@@ -40,8 +41,9 @@ interface SearchOption {
 }
 
 export default function FoodTruckFinder() {
+  const router = useRouter();
   // Food truck data imported from JSON file
-  const foodTrucks: FoodTruck[] = foodTruckData;
+  const baseFoodTrucks: FoodTruck[] = foodTruckData;
 
   // State management
   const [showSearchOverlay, setShowSearchOverlay] = useState(true);
@@ -53,7 +55,8 @@ export default function FoodTruckFinder() {
   const [searchFilter, setSearchFilter] = useState("");
   const [overlayError, setOverlayError] = useState("");
   const [geolocateLoading, setGeolocateLoading] = useState(false);
-  const [currentTrucks, setCurrentTrucks] = useState<FoodTruck[]>(foodTrucks);
+  const [foodTrucks, setFoodTrucks] = useState<FoodTruck[]>(baseFoodTrucks);
+  const [currentTrucks, setCurrentTrucks] = useState<FoodTruck[]>(baseFoodTrucks);
   const [showMapPrompt, setShowMapPrompt] = useState(true);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -63,6 +66,24 @@ export default function FoodTruckFinder() {
   // Refs
   const mapRef = useRef<LeafletMapRef>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Load custom events from localStorage
+  useEffect(() => {
+    const customEvents = JSON.parse(localStorage.getItem("truckEvents") || "{}");
+    const customTrucks = JSON.parse(localStorage.getItem("customTrucks") || "[]");
+    
+    // Merge default trucks with custom trucks
+    const allTrucks = [...baseFoodTrucks, ...customTrucks];
+    
+    // Add custom events to all trucks
+    const mergedTrucks = allTrucks.map((truck) => ({
+      ...truck,
+      events: [...(truck.events || []), ...(customEvents[truck.id] || [])],
+    }));
+    setFoodTrucks(mergedTrucks);
+    setCurrentTrucks(mergedTrucks);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Search data
   const searchData = {
@@ -427,6 +448,25 @@ export default function FoodTruckFinder() {
                 </p>
               )}
             </div>
+
+            {/* Owner Portal Link */}
+            <div className="mt-8 text-center">
+              <p className="text-gray-300 mb-2">Want to contribute?</p>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => router.push("/operator")}
+                  className="text-blue-400 hover:text-blue-300 font-semibold"
+                >
+                  🚚 Operators: Claim your truck and manage events →
+                </button>
+                <button
+                  onClick={() => router.push("/eater")}
+                  className="text-green-400 hover:text-green-300 font-semibold"
+                >
+                  🍽️ Eaters: Add trucks and write reviews →
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -481,6 +521,21 @@ export default function FoodTruckFinder() {
           >
             ← New Search
           </button>
+
+          <div className="absolute top-4 right-4 z-20 flex gap-2 pointer-events-auto">
+            <button
+              onClick={() => router.push("/operator")}
+              className="px-5 py-2 text-base font-semibold text-white bg-blue-600/90 rounded-full shadow-md hover:bg-blue-600 backdrop-blur-sm transition transform hover:scale-105"
+            >
+              🚚 Operators
+            </button>
+            <button
+              onClick={() => router.push("/eater")}
+              className="px-5 py-2 text-base font-semibold text-white bg-green-600/90 rounded-full shadow-md hover:bg-green-600 backdrop-blur-sm transition transform hover:scale-105"
+            >
+              🍽️ Eaters
+            </button>
+          </div>
         </div>
       )}
 

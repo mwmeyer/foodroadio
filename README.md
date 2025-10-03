@@ -6,6 +6,27 @@ The platform that connects food lovers with amazing food trucks AND helps food e
 
 **🚀 [Live App](https://foodroadio.vercel.app/)**
 
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+Then visit:
+- **Main App:** `http://localhost:3000` (or the port shown in terminal)
+- **Operator Portal:** `http://localhost:3000/operator`
+- **Eater Portal:** `http://localhost:3000/eater`
+
+📖 **For food truck operators:** Check out the [User Portals Guide](./USER_PORTALS_GUIDE.md)  
+📖 **For food lovers:** Check out the [User Portals Guide](./USER_PORTALS_GUIDE.md)
+
 ## What is FoodRoadio?
 
 FoodRoadio serves two connected communities:
@@ -18,13 +39,35 @@ FoodRoadio serves two connected communities:
 
 ### Food Truck Discovery
 - Interactive map with food truck locations
-- Search by cuisine or city  
+- Search by cuisine, city, or events
 - Get directions to trucks
+- Event calendar integration
+- Community-contributed trucks
 
-### Coming Soon: Event Platform
-- Event hosting and management tools
-- Community event discovery
-- Booking and ticketing system
+### **NEW: Dual User Portals** 🎉
+
+#### 🚚 Operator Portal
+Food truck operators can:
+- **Claim existing trucks** from the database
+- **Add new trucks** to expand the network
+- **Create and manage events** (cooking classes, live music, trivia, etc.)
+- **Update event details** including date, time, pricing, and capacity
+- Have events **automatically appear** on the main map for customers
+
+#### 🍽️ Eater Portal
+Food lovers can:
+- **Add new food trucks** they discover
+- **Write reviews** with ratings and detailed feedback
+- **Track contributions** (trucks added and reviews written)
+- **Build the community** by sharing discoveries
+
+👉 **[Read the User Portals Guide](./USER_PORTALS_GUIDE.md)** to get started!
+
+### Event Discovery
+- Browse events by type (Cooking Classes, Live Music, Trivia, etc.)
+- View event details including date, time, and pricing
+- See available spots for each event
+- Filter food trucks by the events they host
 
 ## Planned Features
 
@@ -34,8 +77,9 @@ FoodRoadio serves two connected communities:
 - **RSVP & Tickets:** Book spots for special events and experiences
 - **Reviews & Photos:** Share your event experiences with the community
 - **Notifications:** Get alerts when your favorite trucks announce new events
+- **Add Trucks:** Contribute new food truck discoveries to the map
 
-### For Food Entrepreneurs
+### For Food Entrepreneurs (Operators)
 - **Event Creation Tools:** Easily set up and promote events at your venue
 - **Event Management:** Handle RSVPs, capacity limits, and attendee communication
 - **Community Building:** Create regular events that bring customers back
@@ -62,12 +106,14 @@ FoodRoadio serves two connected communities:
 
 ## Tech Stack
 
-- **Framework:** Next.js with TypeScript
+- **Framework:** Next.js 14 with TypeScript
 - **Monorepo:** Turborepo
-- **Database:** [To be determined]
-- **Maps Integration:** [To be determined] 
-- **Payment Processing:** [To be determined]
-- **Authentication:** [To be determined]
+- **Styling:** Tailwind CSS
+- **Maps:** Leaflet
+- **UI Components:** React Native Web (shared between web and native)
+- **State Management:** React Hooks
+- **Data Storage:** localStorage (for demo; ready to migrate to database)
+- **Authentication:** Demo mode (ready to integrate Auth0, NextAuth, or Supabase)
 - **Deployment:** Vercel
 
 ## Vision
